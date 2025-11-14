@@ -3,22 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-// FontAwesome correct imports
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faPhone,
-    faEnvelope,
-    faUser,
-    faBars,
-    faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-
-import {
-    faFacebook,
-    faFlickr,
-    faXTwitter,
-} from "@fortawesome/free-brands-svg-icons";
-
 export default function Home() {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setScrolled] = useState(false);
@@ -112,10 +96,7 @@ export default function Home() {
                     <div className="toggle-btn lg:hidden cursor-pointer"
                         onClick={() => setIsOpen(!isOpen)}
                     >
-                        <FontAwesomeIcon
-                            icon={isOpen ? faTimes : faBars}
-                            className="text-[#193555] text-xl" />
-
+                        <i className={`ri-${isOpen ? 'close' : 'menu'}-line text-[#193555] text-xl`}></i>
                     </div>
                     {/* {Mobile Menu Dropdown} */}
                     <ul

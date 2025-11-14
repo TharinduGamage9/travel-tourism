@@ -1,10 +1,5 @@
 import { Unbounded, Sora } from "next/font/google";
 import "./globals.css";
-//Font
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { config } from "@fortawesome/fontawesome-svg-core";
-config.autoAddCss =false ;
-
 //icon
 import 'remixicon/fonts/remixicon.css'
 import Nav from "./Components/Nav";
