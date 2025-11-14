@@ -16,6 +16,11 @@ export default function Home() {
         return () => window.removeEventListener("scroll", handleScrolled);
     }, []);
 
+    // Close mobile menu when a link is clicked
+    const handleLinkClick = () => {
+        setIsOpen(false);
+    };
+
     return (
         <nav
             className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out 
@@ -51,7 +56,7 @@ export default function Home() {
             >
                 {/* MOBILE LOGO */}
                 <div className="lg:hidden flex text-2xl uppercase font-semibold text-[#193555]">
-                    <Link href="/">Ceylon <span className="text-[#697e8a]">Travels</span></Link>
+                    <Link href="/" onClick={handleLinkClick}>Ceylon <span className="text-[#697e8a]">Travels</span></Link>
                 </div>
 
                 {/* DESKTOP MENU */}
@@ -104,11 +109,11 @@ export default function Home() {
   overflow-hidden transition-all duration-500 ease-in-out
   ${isOpen ? "max-h-[500px] top-0 opacity-100 py-6" : "max-h-0 top-full opacity-0 py-0"}`}
                     >
-                        <li><Link href="/" className="font-[500] text-[#697e8a] hover:text-[#193555]">Home</Link></li>
-                        <li><Link href="/About" className="font-[500] text-[#697e8a] hover:text-[#193555]">About</Link></li>
-                        <li><Link href="/Tours" className="font-[500] text-[#697e8a] hover:text-[#193555]">Tours</Link></li>
-                        <li><Link href="/Gallery" className="font-[500] text-[#697e8a] hover:text-[#193555]">Gallery</Link></li>
-                        <li><Link href="/Contact" className="font-[500] text-[#697e8a] hover:text-[#193555]">Contact</Link></li>
+                        <li><Link href="/" onClick={handleLinkClick} className="font-[500] text-[#697e8a] hover:text-[#193555]">Home</Link></li>
+                        <li><Link href="/About" onClick={handleLinkClick} className="font-[500] text-[#697e8a] hover:text-[#193555]">About</Link></li>
+                        <li><Link href="/Tours" onClick={handleLinkClick} className="font-[500] text-[#697e8a] hover:text-[#193555]">Tours</Link></li>
+                        <li><Link href="/Gallery" onClick={handleLinkClick} className="font-[500] text-[#697e8a] hover:text-[#193555]">Gallery</Link></li>
+                        <li><Link href="/Contact" onClick={handleLinkClick} className="font-[500] text-[#697e8a] hover:text-[#193555]">Contact</Link></li>
 
                     </ul>
 
