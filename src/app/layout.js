@@ -3,6 +3,7 @@ import "./globals.css";
 //icon
 import 'remixicon/fonts/remixicon.css'
 import LayoutWrapper from "./Components/LayoutWrapper";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 
 const unbounded = Unbounded({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
         <LayoutWrapper>
           {children}
         </LayoutWrapper>
+        <SpeedInsights />
       </body>
     </html>
   );
