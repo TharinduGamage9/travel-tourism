@@ -5,25 +5,39 @@ import { useState, useEffect } from "react";
 
 export default function Gallery() {
     const [selectedImage, setSelectedImage] = useState(null);
+    const [galleryImages, setGalleryImages] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Gallery images - using all available gallery images
-    const galleryImages = [
-        { id: 1, src: "/images/gallery-01.jpg", alt: "Gallery Image 1" },
-        { id: 2, src: "/images/gallery-02.jpg", alt: "Gallery Image 2" },
-        { id: 3, src: "/images/gallery-03.jpg", alt: "Gallery Image 3" },
-        { id: 4, src: "/images/gallery-04.jpg", alt: "Gallery Image 4" },
-        { id: 5, src: "/images/gallery-05.jpg", alt: "Gallery Image 5" },
-        { id: 6, src: "/images/gallery-06.jpg", alt: "Gallery Image 6" },
-        { id: 7, src: "/images/gallery-07.jpg", alt: "Gallery Image 7" },
-        { id: 8, src: "/images/gallery-08.jpg", alt: "Gallery Image 8" },
-        { id: 9, src: "/images/gallery-09.jpg", alt: "Gallery Image 9" },
-        { id: 10, src: "/images/gallery-10.jpg", alt: "Gallery Image 10" },
-        { id: 11, src: "/images/gallery-11.jpg", alt: "Gallery Image 11" },
-        { id: 12, src: "/images/gallery-12.jpg", alt: "Gallery Image 12" },
-        { id: 13, src: "/images/gallery-13.jpg", alt: "Gallery Image 13" },
-        { id: 14, src: "/images/gallery-14.jpeg", alt: "Gallery Image 14" },
-        { id: 15, src: "/images/beach.jpg", alt: "Beautiful Beach in Sri Lanka" },
-    ];
+    // Fetch gallery images from API
+    useEffect(() => {
+        const fetchGallery = async () => {
+            try {
+                const res = await fetch("/api/gallery");
+                const data = await res.json();
+                if (data.success) {
+                    // Map MongoDB data to component format
+                    const mappedImages = data.data.map((item, index) => ({
+                        id: item._id || index + 1,
+                        src: item.imageUrl,
+                        alt: item.alt || item.title || `Gallery Image ${index + 1}`,
+                        title: item.title,
+                    }));
+                    setGalleryImages(mappedImages);
+                } else {
+                    console.error("Error fetching gallery:", data.error);
+                    // Fallback to empty array
+                    setGalleryImages([]);
+                }
+            } catch (error) {
+                console.error("Error fetching gallery:", error);
+                setGalleryImages([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchGallery();
+    }, []);
 
     const openModal = (image) => {
         setSelectedImage(image);
@@ -66,7 +80,7 @@ export default function Gallery() {
     }, [selectedImage]);
 
     return (
-        <main className="min-h-screen pt-24 pb-16">
+        <main className="min-h-screen pt-[100px] pb-16">
             {/* Hero Section */}
             <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden mb-16">
                 <div className="absolute inset-0">
@@ -94,8 +108,24 @@ export default function Gallery() {
             {/* Gallery Grid */}
             <section className="px-4 sm:px-8 lg:px-[10%]">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {galleryImages.map((image, index) => (
+                    {loading ? (
+                        <div className="text-center py-16">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#193555] mx-auto mb-4"></div>
+                            <p className="text-gray-600">Loading gallery...</p>
+                        </div>
+                    ) : galleryImages.length === 0 ? (
+                        <div className="text-center py-16">
+                            <i className="ri-image-line text-6xl text-gray-400 mb-4"></i>
+                            <h3 className="text-2xl font-semibold text-[#193555] mb-2">
+                                No Images Available
+                            </h3>
+                            <p className="text-gray-600">
+                                Gallery images will appear here once uploaded.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            {galleryImages.map((image, index) => (
                             <div
                                 key={image.id}
                                 className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
@@ -113,8 +143,9 @@ export default function Gallery() {
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 

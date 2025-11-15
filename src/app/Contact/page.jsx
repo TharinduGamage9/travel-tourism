@@ -67,7 +67,7 @@ export default function ContactPage() {
     };
 
     return (
-        <main className="min-h-screen pt-24 pb-16">
+        <main className="min-h-screen pt-[100px] pb-16">
             {/* Hero Section */}
             <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden mb-12">
                 <div className="absolute inset-0">
@@ -267,7 +267,7 @@ export default function ContactPage() {
                                         <div>
                                             <h3 className="font-semibold text-[#193555] mb-1">Phone</h3>
                                             <a
-                                                href="tel:+94768813371"
+                                                href="tel:0787962180"
                                                 className="text-[#697e8a] hover:text-[#193555] transition-colors text-sm"
                                             >
                                                 0787962180

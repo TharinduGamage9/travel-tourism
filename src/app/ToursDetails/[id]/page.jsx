@@ -2,19 +2,58 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { use } from "react";
-import tours from "../../../data/tours";
+import { use, useState, useEffect } from "react";
 
 export default function TourDetails({ params }) {
     const resolvedParams = use(params);
-    const tour = tours.find((t) => t.id === resolvedParams.id);
+    const [tour, setTour] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    if (!tour) {
+    useEffect(() => {
+        const fetchTour = async () => {
+            try {
+                setLoading(true);
+                const res = await fetch(`/api/tours/${resolvedParams.id}`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    setTour(data.data);
+                } else {
+                    setError(data.error || 'Tour not found');
+                }
+            } catch (err) {
+                console.error('Error fetching tour:', err);
+                setError('Failed to load tour');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (resolvedParams.id) {
+            fetchTour();
+        }
+    }, [resolvedParams.id]);
+
+    if (loading) {
         return (
-            <main className="min-h-screen pt-24 pb-16 flex items-center justify-center">
+            <main className="min-h-screen pt-[100px] pb-16 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#193555] mx-auto mb-4"></div>
+                    <p className="text-[#697e8a]">Loading tour...</p>
+                </div>
+            </main>
+        );
+    }
+
+    if (error || !tour) {
+        return (
+            <main className="min-h-screen pt-[100px] pb-16 flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold text-[#193555] mb-4">Tour Not Found</h1>
-                    <p className="text-[#697e8a] mb-6">The tour you're looking for doesn't exist.</p>
+                    <p className="text-[#697e8a] mb-6">
+                        {error || "The tour you're looking for doesn't exist."}
+                    </p>
                     <Link
                         href="/Tours"
                         className="inline-block bg-[#193555] hover:bg-[#1a3f66] text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300"
@@ -45,16 +84,22 @@ export default function TourDetails({ params }) {
     };
 
     return (
-        <main className="min-h-screen pt-24 pb-16">
+        <main className="min-h-screen pt-[100px] pb-16">
             {/* Hero Image Section */}
             <section className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden mb-12">
-                <Image
-                    src={tour.photo}
-                    alt={tour.title}
-                    fill
-                    className="object-cover"
-                    priority
-                />
+                {tour.photo && tour.photo.trim() ? (
+                    <Image
+                        src={tour.photo}
+                        alt={tour.title}
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                        <i className="ri-image-line text-6xl text-gray-400"></i>
+                    </div>
+                )}
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="relative z-10 flex items-end h-full px-4 sm:px-8 lg:px-[10%] pb-8">
                     <div className="text-white">
@@ -105,7 +150,7 @@ export default function TourDetails({ params }) {
                             </div>
 
                             {/* Brief Reviews Section */}
-                            {tour.reviews && tour.reviews.length > 0 && (
+                            {tour.reviews && Array.isArray(tour.reviews) && tour.reviews.length > 0 && (
                                 <div className="bg-white rounded-lg shadow-md p-6">
                                     <h2 className="text-xl font-semibold text-[#193555] mb-4 unbounded-font">
                                         Reviews ({tour.reviews.length})
@@ -115,12 +160,12 @@ export default function TourDetails({ params }) {
                                             <div key={index} className="border-b border-gray-200 pb-3 last:border-0 last:pb-0">
                                                 <div className="flex items-center justify-between">
                                                     <h3 className="font-semibold text-[#193555] text-sm">
-                                                        {review.name}
+                                                        {review?.name || 'Anonymous'}
                                                     </h3>
                                                     <div className="flex items-center gap-1">
-                                                        {renderStars(review.rating)}
+                                                        {renderStars(review?.rating || 0)}
                                                         <span className="text-xs text-[#697e8a] ml-1">
-                                                            {review.rating}
+                                                            {review?.rating || 0}
                                                         </span>
                                                     </div>
                                                 </div>

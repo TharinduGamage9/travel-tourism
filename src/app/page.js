@@ -2,21 +2,41 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
-import tours from "../data/tours";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-    // Get featured tours
-    const featuredTours = useMemo(() => {
-        return tours
-            .filter((tour) => tour.featured === true)
-            .slice(0, 6);
+    const [featuredTours, setFeaturedTours] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch featured tours from MongoDB
+    useEffect(() => {
+        const fetchFeaturedTours = async () => {
+            try {
+                const res = await fetch("/api/tours");
+                const data = await res.json();
+                if (data.success) {
+                    // Filter for featured tours and limit to 6
+                    const featured = data.data
+                        .filter((tour) => tour.featured === true)
+                        .slice(0, 6);
+                    setFeaturedTours(featured);
+                } else {
+                    console.error("Error fetching tours:", data.error);
+                }
+            } catch (error) {
+                console.error("Error fetching tours:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFeaturedTours();
     }, []);
 
 
 
   return (
-        <main className="min-h-screen">
+        <main className="min-h-screen pt-[100px]">
             {/* Hero Section */}
             <section className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden">
                 <div className="absolute inset-0">
@@ -56,7 +76,7 @@ export default function Home() {
             </section>
 
             {/* Featured Tours Section */}
-            {featuredTours.length > 0 && (
+            {!loading && featuredTours.length > 0 && (
                 <section className="py-16 px-4 sm:px-8 lg:px-[10%] bg-white">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
@@ -70,17 +90,23 @@ export default function Home() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {featuredTours.map((tour) => (
                                 <Link
-                                    key={tour.id}
-                                    href={`/ToursDetails/${tour.id}`}
+                                    key={tour._id || tour.id}
+                                    href={`/ToursDetails/${tour._id || tour.id}`}
                                     className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group"
                                 >
                                     <div className="relative h-64 overflow-hidden">
-                                        <Image
-                                            src={tour.photo}
-                                            alt={tour.title}
-                                            fill
-                                            className="object-cover transition-transform duration-300 group-hover:scale-110"
-                                        />
+                                        {tour.photo && tour.photo.trim() ? (
+                                            <Image
+                                                src={tour.photo}
+                                                alt={tour.title}
+                                                fill
+                                                className="object-cover transition-transform duration-300 group-hover:scale-110"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                                <i className="ri-image-line text-5xl text-gray-400"></i>
+                                            </div>
+                                        )}
                                         <div className="absolute top-4 right-4 bg-yellow-400 text-[#193555] px-3 py-1 rounded-full text-sm font-bold">
                                             Featured
                                         </div>

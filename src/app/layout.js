@@ -2,8 +2,7 @@ import { Unbounded, Sora } from "next/font/google";
 import "./globals.css";
 //icon
 import 'remixicon/fonts/remixicon.css'
-import Nav from "./Components/Nav";
-import Footer from "./Components/Footer";
+import LayoutWrapper from "./Components/LayoutWrapper";
 
 
 const unbounded = Unbounded({
@@ -29,11 +28,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${sora.variable} ${unbounded.variable} antialiased flex flex-col min-h-screen`}
       >
-        <Nav/>
-        <div className="flex-grow">
+        <LayoutWrapper>
           {children}
-        </div>
-        <Footer/>
+        </LayoutWrapper>
       </body>
     </html>
   );

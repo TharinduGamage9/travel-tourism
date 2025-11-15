@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function AboutPage() {
     return (
-        <main className="min-h-screen pt-24 pb-16">
+        <main className="min-h-screen pt-[100px] pb-16">
             {/* Hero Section */}
             <section className="relative w-full h-[400px] md:h-[500px] overflow-hidden mb-12">
                 <div className="absolute inset-0">
@@ -201,7 +201,7 @@ export default function AboutPage() {
                                 Feel Free to ask anything without hesitation
                             </p>
                             <a
-                                href="https://wa.me/94768813371"
+                                href="https://wa.me/94787962180"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors"
@@ -249,10 +249,10 @@ export default function AboutPage() {
                             <div className="border-t border-gray-200 pt-6">
                                 <p className="text-[#697e8a] text-sm mb-2">Need help? Call us</p>
                                 <a
-                                    href="tel:+94768813371"
+                                    href="tel:0787962180"
                                     className="text-2xl font-bold text-[#193555] hover:text-[#1a3f66] transition-colors"
                                 >
-                                    +94 76 881 3371
+                                    0787962180
                                 </a>
                             </div>
                         </div>

@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import tours from "../../data/tours";
 
 export default function ToursPage() {
-    // Display all tours
+    const [tours, setTours] = useState([]);
+    const [loading, setLoading] = useState(true);
     const filteredTours = tours || [];
     
     // Video carousel state
@@ -14,8 +14,30 @@ export default function ToursPage() {
     const videos = [
         { src: "/images/hero-video.mp4", alt: "Sri Lanka Tour Video 1" },
         { src: "/images/hero-video1.mp4", alt: "Sri Lanka Tour Video 2" },
-        { src: "/images/hero-video2.mp4", alt: "Sri Lanka Tour Video 3" },
+        { src: "/images/hero-video2.mp4", alt: "Sri Lanka Tour Video 2" },
+        
     ];
+
+    // Fetch tours from API
+    useEffect(() => {
+        const fetchTours = async () => {
+            try {
+                const res = await fetch("/api/tours");
+                const data = await res.json();
+                if (data.success) {
+                    setTours(data.data);
+                } else {
+                    console.error("Error fetching tours:", data.error);
+                }
+            } catch (error) {
+                console.error("Error fetching tours:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchTours();
+    }, []);
 
     // Auto-play next video
     useEffect(() => {
@@ -45,7 +67,7 @@ export default function ToursPage() {
     };
 
     return (
-        <main className="min-h-screen pt-24 pb-16">
+        <main className="min-h-screen pt-[100px] pb-16">
             {/* Hero Video Section */}
             <section className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden mb-12">
                 <div className="absolute inset-0">
@@ -114,7 +136,12 @@ export default function ToursPage() {
             {/* Tours Grid */}
             <section className="px-4 sm:px-8 lg:px-[10%]">
                 <div className="max-w-7xl mx-auto">
-                    {!tours || tours.length === 0 ? (
+                    {loading ? (
+                        <div className="text-center py-16">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#193555] mx-auto mb-4"></div>
+                            <p className="text-[#697e8a]">Loading tours...</p>
+                        </div>
+                    ) : !tours || tours.length === 0 ? (
                         <div className="text-center py-16">
                             <i className="ri-error-warning-line text-6xl text-[#697e8a] mb-4"></i>
                             <h3 className="text-2xl font-semibold text-[#193555] mb-2">
@@ -128,18 +155,24 @@ export default function ToursPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredTours.map((tour) => (
                                 <Link
-                                    key={tour.id}
-                                    href={`/ToursDetails/${tour.id}`}
+                                    key={tour._id || tour.id}
+                                    href={`/ToursDetails/${tour._id || tour.id}`}
                                     className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group"
                                 >
                                     {/* Tour Image */}
-                                    <div className="relative h-64 overflow-hidden">
-                                        <Image
-                                            src={tour.photo}
-                                            alt={tour.title}
-                                            fill
-                                            className="object-cover transition-transform duration-300 group-hover:scale-110"
-                                        />
+                                    <div className="relative h-64 overflow-hidden bg-gray-200">
+                                        {tour.photo && tour.photo.trim() ? (
+                                            <Image
+                                                src={tour.photo}
+                                                alt={tour.title}
+                                                fill
+                                                className="object-cover transition-transform duration-300 group-hover:scale-110"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                                <i className="ri-image-line text-5xl text-gray-400"></i>
+                                            </div>
+                                        )}
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
                                             <span className="text-sm font-semibold text-[#193555]">
                                                 ${tour.price}
