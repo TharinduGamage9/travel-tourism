@@ -215,10 +215,49 @@ vercel
 
 Or connect your GitHub repo → automatic deployment.
 
-### Environment Variables on Vercel:
-Make sure to add all environment variables in your Vercel project settings:
-- Go to Vercel Dashboard → Your Project → Settings → Environment Variables
-- Add all variables from `.env.local`
+### ⚙️ Environment Variables on Vercel:
+
+**⚠️ IMPORTANT:** You must add environment variables in Vercel for your deployment to work!
+
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+2. Select your project
+3. Go to **Settings** → **Environment Variables**
+4. Add the following variables:
+
+#### Required Environment Variables:
+
+```env
+# MongoDB Connection (REQUIRED - Build will fail without this!)
+MONGODB_URI=your_mongodb_connection_string
+
+# Cloudinary Configuration (REQUIRED for image uploads)
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+# Mailtrap Configuration (REQUIRED for contact form)
+SMTP_HOST=smtp.mailtrap.io
+SMTP_PORT=2525
+SMTP_USER=your_mailtrap_user
+SMTP_PASS=your_mailtrap_password
+```
+
+#### Optional Environment Variables:
+
+```env
+# Contact Email (has default if not set)
+CONTACT_EMAIL=Ceylonetravels@gmail.com
+
+# Admin Credentials (has defaults if not set)
+NEXT_PUBLIC_ADMIN_EMAIL=admin@travel.com
+NEXT_PUBLIC_ADMIN_PASSWORD=admin123
+```
+
+**Note:** Make sure to set the environment variables for **Production**, **Preview**, and **Development** environments, or select "Apply to" → "All Environments".
+
+**After adding environment variables:**
+- Redeploy your project (or push a new commit to trigger a new deployment)
+- The build should now succeed! 🎉
 
 ## 📁 Project Structure
 

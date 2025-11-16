@@ -1,8 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+
+function SearchParamsEffect({ setShowForm }) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("action") === "add") {
+      setShowForm(true);
+    }
+  }, [searchParams, setShowForm]);
+
+  return null;
+}
 
 export default function AdminGallery() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,7 +23,6 @@ export default function AdminGallery() {
   const [showForm, setShowForm] = useState(false);
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
   
   const [formData, setFormData] = useState({
     imageUrl: "",
@@ -28,12 +39,7 @@ export default function AdminGallery() {
     }
     setIsAuthenticated(true);
     fetchGallery();
-
-    // Check if add action is in URL
-    if (searchParams.get("action") === "add") {
-      setShowForm(true);
-    }
-  }, [router, searchParams]);
+  }, [router]);
 
   const fetchGallery = async () => {
     try {
@@ -166,6 +172,9 @@ export default function AdminGallery() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <Suspense fallback={null}>
+        <SearchParamsEffect setShowForm={setShowForm} />
+      </Suspense>
       <div className="max-w-7xl mx-auto p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
