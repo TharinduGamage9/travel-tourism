@@ -44,6 +44,110 @@ export default function AdminGallery() {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setFormData({ ...formData, imageUrl: data.url });
+      } else {
+        alert("Error uploading image: " + (data.error || "Upload failed"));
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Error uploading image");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.imageUrl || !formData.alt) {
+      alert("Please upload an image and provide an alt text");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/gallery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setShowForm(false);
+        setFormData({
+          imageUrl: "",
+          alt: "",
+          title: "",
+          category: "",
+        });
+        fetchGallery();
+        alert("Image added to gallery successfully!");
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error adding image:", error);
+      alert("Error adding image to gallery");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this image from the gallery?")) return;
+
+    try {
+      const res = await fetch(`/api/gallery/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        fetchGallery();
+        alert("Image deleted successfully!");
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      alert("Error deleting image");
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (!confirm("Are you sure you want to delete ALL images from the gallery? This action cannot be undone.")) return;
+
+    try {
+      const res = await fetch("/api/gallery/delete-all", {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        fetchGallery();
+        alert(`Successfully deleted ${data.deletedCount} image(s) from gallery!`);
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error deleting all images:", error);
+      alert("Error deleting all images");
+    }
+  };
+
 
   if (!isAuthenticated || loading) {
     return (
