@@ -36,7 +36,7 @@ export default function Home() {
 
 
   return (
-        <main className="min-h-screen pt-[100px]">
+        <main className="min-h-screen pt-[50px] md:pt-[100px]">
             {/* Hero Section */}
             <section className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden">
                 <div className="absolute inset-0">

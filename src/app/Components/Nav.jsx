@@ -85,8 +85,8 @@ export default function Home() {
     return (
         <>
             {/* TOP BAR */}
-            <div className="fixed top-0 left-0 w-full bg-[#193555] text-white py-2 px-4 z-[60] text-center text-sm">
-                <p className="flex items-center justify-center gap-2 flex-wrap">
+            <div className={`hidden md:flex fixed top-0 left-0 w-full h-9 items-center bg-[#193555] text-white px-4 z-[60] text-center text-sm md:transition-transform md:duration-300 ${isScrolled ? "md:-translate-y-full" : "md:translate-y-0"}`}>
+                <p className="flex items-center justify-center gap-2 w-full">
                     <span>Discover Sri Lanka's Beauty with Ceylon Travels – Unique Trips Made Just for You!</span>
                     <span className="hidden sm:inline">|</span>
                     <Link href="/Contact" className="hover:underline font-semibold">Contact Us Today</Link>
@@ -94,18 +94,17 @@ export default function Home() {
             </div>
 
             <nav
-                className={`navbar fixed left-0 w-full z-50 transition-all duration-500 ease-in-out 
+                className={`navbar fixed left-0 w-full z-50 transition-all duration-500 ease-in-out top-0 ${isScrolled ? "md:top-0" : "md:top-9"}
             ${isScrolled ? "shadow-lg" : ""}
           `}
-                style={{ top: '36px' }}
             >
             {/* MAIN NAV MENU */}
             <div
                 className={`w-full px-[2%] sm:px-[8%] lg:px-[10%]
           flex justify-between lg:justify-center items-center
           transition-all duration-500 ease-in-out 
-          bg-white
-          ${isScrolled ? "py-2 shadow-md" : "py-3"}
+          bg-white relative
+          ${isScrolled ? "py-1 md:py-2 shadow-md" : "py-2 md:py-3"}
         `}
             >
                 {/* MOBILE LOGO */}
@@ -310,9 +309,9 @@ export default function Home() {
                     </div>
                     {/* {Mobile Menu Dropdown} */}
                     <ul
-                        className={`lg:hidden flex flex-col items-center gap-6 bg-white shadow-lg absolute left-0 w-full border-t border-gray-200
+                        className={`lg:hidden flex flex-col items-center gap-6 bg-white shadow-lg absolute left-0 w-full border-t border-gray-200 z-[55]
   overflow-hidden transition-all duration-500 ease-in-out
-  ${isOpen ? "max-h-[500px] top-0 opacity-100 py-6" : "max-h-0 top-full opacity-0 py-0"}`}
+  ${isOpen ? "max-h-[500px] top-full opacity-100 py-6" : "max-h-0 top-full opacity-0 py-0"}`}
                     >
                         <li><Link href="/" onClick={handleLinkClick} className="font-[500] text-[#697e8a] hover:text-[#193555]">Home</Link></li>
                         <li><Link href="/About" onClick={handleLinkClick} className="font-[500] text-[#697e8a] hover:text-[#193555]">About</Link></li>
