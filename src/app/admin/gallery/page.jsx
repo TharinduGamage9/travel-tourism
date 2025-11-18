@@ -127,6 +127,7 @@ export default function AdminGallery() {
     }
   };
 
+  // Delete all gallery images function
   const handleDeleteAll = async () => {
     if (!confirm("Are you sure you want to delete ALL images from the gallery? This action cannot be undone.")) return;
 
